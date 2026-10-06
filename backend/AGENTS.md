@@ -3,6 +3,7 @@
 ## 命令
 
 - 安装：`uv sync`
+- 初始化数据库：`uv run python scripts/init_db.py`（幂等建表；生产用 alembic）
 - Lint：`uv run ruff check .` / `uv run ruff format --check .`
 - 类型：`uv run ty check`
 - 测试：`uv run pytest`（读 `.env`，连 `DATABASE_URL` 派生的 `<db>_test` 库，自动建库 + 每次重建表；禁止在测试里硬编码 `os.environ`）

@@ -32,7 +32,6 @@ async def get_current_user(
         subject = decode_subject(
             token=credentials.credentials,
             secret=settings.jwt_secret,
-            algorithms=[settings.jwt_algorithm],
         )
     except jwt.PyJWTError, ValueError:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "invalid token") from None

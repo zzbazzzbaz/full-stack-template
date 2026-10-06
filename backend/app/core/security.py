@@ -14,12 +14,15 @@ def verify_password(plain: str, hashed: str) -> bool:
     return _password_hash.verify(plain, hashed)
 
 
+JWT_ALGORITHM = "HS256"
+
+
 def create_access_token(
     *,
     subject: str,
     secret: str,
-    algorithm: str,
     expires_minutes: int,
+    algorithm: str = JWT_ALGORITHM,
 ) -> str:
     now = datetime.now(UTC)
     payload = {
@@ -30,8 +33,8 @@ def create_access_token(
     return jwt.encode(payload, secret, algorithm=algorithm)
 
 
-def decode_subject(*, token: str, secret: str, algorithms: list[str]) -> str:
-    payload = jwt.decode(token, secret, algorithms=algorithms)
+def decode_subject(*, token: str, secret: str) -> str:
+    payload = jwt.decode(token, secret, algorithms=[JWT_ALGORITHM])
     subject = payload.get("sub")
     if not isinstance(subject, str) or not subject:
         raise ValueError("invalid token subject")

@@ -15,6 +15,5 @@ async def login(session: AsyncSession, *, username: str, password: str, settings
     return create_access_token(
         subject=str(user.id),
         secret=settings.jwt_secret,
-        algorithm=settings.jwt_algorithm,
         expires_minutes=settings.access_token_expire_minutes,
     )

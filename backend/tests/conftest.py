@@ -3,11 +3,13 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlmodel import SQLModel
 
+import app.infrastructure.db.models  # noqa: F401 - 注册所有表到 metadata
 from app.api.dependencies import get_session
 from app.api.routes import api_router
 from app.core.config import get_settings
-from app.infrastructure.db.engine import create_engine, prepare_test_database
+from app.infrastructure.db.engine import create_engine
 from app.infrastructure.db.session import create_session_factory
+from tests.db import prepare_test_database
 
 
 @pytest_asyncio.fixture

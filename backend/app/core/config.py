@@ -8,10 +8,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    app_name: str
     database_url: str
     jwt_secret: str
-    jwt_algorithm: str
     access_token_expire_minutes: int
     db_pool_size: int
     db_max_overflow: int

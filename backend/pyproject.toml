@@ -37,16 +37,17 @@ line-length = 100
 select = ["E", "F", "I", "UP", "B", "ASYNC", "TID"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
-"sqlalchemy".msg = "只允许 import sqlmodel；SQLAlchemy 异步 engine 细节收敛在 app/infrastructure/db/engine.py 与 session.py"
+"sqlalchemy".msg = "只允许 import sqlmodel；SQLAlchemy 细节收敛在 app/infrastructure/db/{engine,session}.py 与 tests/db.py"
 
 [tool.ruff.lint.per-file-ignores]
 "app/infrastructure/db/engine.py" = ["TID251"]
 "app/infrastructure/db/session.py" = ["TID251"]
+"tests/db.py" = ["TID251"]
 # FastAPI 依赖注入固定写法：Depends 必须出现在参数默认值位置
 "app/api/dependencies.py" = ["B008"]
 
 [tool.ty.src]
-include = ["app", "tests"]
+include = ["app", "scripts", "tests"]
 
 [tool.uv]
 package = false
