@@ -24,6 +24,7 @@ import { z } from "zod";
 
 import { login } from "@/features/auth/api";
 import { setToken } from "@/features/auth/token";
+import { toErrorMessage } from "@/lib/api";
 
 const loginSchema = z.object({
   username: z.string().min(3, "用户名至少 3 位"),
@@ -47,7 +48,7 @@ export function LoginPage() {
       queryClient.clear();
       await navigate({ to: "/" });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "登录失败");
+      toast.error(toErrorMessage(error, "登录失败"));
     }
   }
 

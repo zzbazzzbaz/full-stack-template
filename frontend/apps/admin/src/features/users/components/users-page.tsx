@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { meQueryOptions } from "@/features/auth/api";
 import { useChangeRoleMutation, usersQueryOptions } from "@/features/users/queries";
+import { toErrorMessage } from "@/lib/api";
 import { UsersTable } from "./users-table";
 
 const PAGE_SIZE = 10;
@@ -34,7 +35,7 @@ export function UsersPage() {
             </div>
           ) : isError ? (
             <p className="py-8 text-center text-sm text-destructive">
-              {error instanceof Error ? error.message : "加载失败"}
+              {toErrorMessage(error, "加载失败")}
             </p>
           ) : (
             <UsersTable

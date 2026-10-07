@@ -25,6 +25,7 @@ import { z } from "zod";
 
 import { login, register } from "@/features/auth/api";
 import { setToken } from "@/features/auth/token";
+import { toErrorMessage } from "@/lib/api";
 
 const registerSchema = z.object({
   username: z.string().min(3, "用户名至少 3 位").max(32, "用户名最多 32 位"),
@@ -50,7 +51,7 @@ export function RegisterPage() {
       toast.success("注册成功");
       await navigate({ to: "/" });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "注册失败");
+      toast.error(toErrorMessage(error, "注册失败"));
     }
   }
 

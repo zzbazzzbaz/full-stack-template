@@ -60,6 +60,15 @@ export function errorMessage(body: unknown): string {
   return "请求失败";
 }
 
+/** 把任意抛出的值转成可展示文案；非 ApiError（网络异常、前端 bug）记控制台并用 fallback。 */
+export function toErrorMessage(error: unknown, fallback = "请求失败"): string {
+  if (error instanceof ApiError) {
+    return error.message;
+  }
+  console.error(error);
+  return fallback;
+}
+
 /** 把 openapi-fetch 的 { data, error } 结果转成"成功返回 data，失败抛 ApiError"。 */
 export async function unwrap<T>(
   result: Promise<{ data?: T; error?: unknown; response: Response }>,

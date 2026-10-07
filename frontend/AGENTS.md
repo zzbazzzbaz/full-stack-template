@@ -26,7 +26,8 @@
 
 ## 约定
 
-- 请求一律走 `@/lib/api` 的 `api` 实例 + `unwrap()`，不直接 fetch
+- 请求一律走 `@/lib/api` 的 `api` 实例 + `unwrap()`，不直接 fetch；错误文案统一用 `toErrorMessage(error, fallback)`
+- 错误反馈：mutation 失败由 QueryClient 全局 `onError` 统一 toast（`app/providers.tsx`），功能里只在需要定制文案时覆盖；query 错误在页面内展示；路由级错误由 `defaultErrorComponent`（`app/error-component.tsx`）兜底
 - 服务器数据一律用 TanStack Query；纯 UI 状态（主题）用 `@repo/ui/hooks/use-theme`，不引额外状态库
 - 表单用 RHF + Zod，校验规则写在组件顶部
 - `src/routeTree.gen.ts` 由插件生成，提交进仓库（保证没有 dev server 时也能 typecheck）

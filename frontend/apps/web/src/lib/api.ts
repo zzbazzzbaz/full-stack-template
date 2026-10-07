@@ -16,4 +16,4 @@ export const api = createApiClient({
   },
 });
 
-export { ApiError, unwrap } from "@repo/api-client";
+export { ApiError, toErrorMessage, unwrap } from "@repo/api-client";

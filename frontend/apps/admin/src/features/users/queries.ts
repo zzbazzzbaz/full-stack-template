@@ -24,8 +24,5 @@ export function useChangeRoleMutation() {
       void queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("角色已更新");
     },
-    onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "操作失败");
-    },
   });
 }
