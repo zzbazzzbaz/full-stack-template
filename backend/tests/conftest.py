@@ -5,6 +5,7 @@ from sqlmodel import SQLModel
 
 import app.infrastructure.db.models  # noqa: F401 - 注册所有表到 metadata
 from app.api.dependencies import get_session
+from app.api.error_handlers import register_error_handlers
 from app.api.routes import api_router
 from app.core.config import get_settings
 from app.infrastructure.db.engine import create_engine
@@ -40,6 +41,7 @@ async def session():
 @pytest_asyncio.fixture
 async def client(session):
     app = FastAPI()
+    register_error_handlers(app)
     app.include_router(api_router, prefix="/api/v1")
 
     async def override_session():

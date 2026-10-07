@@ -5,7 +5,7 @@
   不拆目录、不拆 URL、不拆 tag。
 """
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
 from app.api.dependencies import (
     CurrentAdminDep,
@@ -15,7 +15,6 @@ from app.api.dependencies import (
 )
 from app.api.schemas.common import Page
 from app.api.schemas.users import RoleUpdateRequest, UserResponse
-from app.services.errors import InvalidActionError, NotFoundError
 from app.services.pagination import normalize
 from app.services.users import users_service
 
@@ -50,10 +49,5 @@ async def change_user_role(
     session: SessionDep,
     me: CurrentAdminDep,
 ) -> UserResponse:
-    try:
-        user = await users_service.change_role(session, user_id=user_id, role=body.role, actor=me)
-    except NotFoundError as e:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, str(e)) from e
-    except InvalidActionError as e:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e)) from e
+    user = await users_service.change_role(session, user_id=user_id, role=body.role, actor=me)
     return UserResponse.model_validate(user)
