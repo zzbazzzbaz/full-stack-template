@@ -1,0 +1,4 @@
+@import "@repo/ui/globals.css";
+
+/* Tailwind 默认只扫描应用自己的源码；这里显式加上共享 UI 包 */
+@source "../../../../packages/ui/src";

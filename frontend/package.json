@@ -1,0 +1,25 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,admin -c cyan,magenta \"npm run dev -w apps/web\" \"npm run dev -w apps/admin\"",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "gen:api": "npm run gen:api -w packages/api-client",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@playwright/test": "^1.63.0",
+    "concurrently": "^10.0.5",
+    "typescript": "~5.9.3"
+  }
+}
