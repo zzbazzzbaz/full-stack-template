@@ -1,5 +1,6 @@
 import createClient from "openapi-fetch";
 
+import { messageForCode } from "./messages";
 import type { paths } from "./schema";
 
 export interface ApiClientOptions {
@@ -38,6 +39,7 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     message: string,
+    readonly code?: string,
   ) {
     super(message);
     this.name = "ApiError";
@@ -46,6 +48,7 @@ export class ApiError extends Error {
 
 interface FastApiErrorBody {
   detail?: string | { msg?: string }[];
+  code?: string;
 }
 
 /** FastAPI 的错误响应有两种形态：字符串 detail 和校验错误数组。 */
@@ -60,10 +63,16 @@ export function errorMessage(body: unknown): string {
   return "请求失败";
 }
 
-/** 把任意抛出的值转成可展示文案；非 ApiError（网络异常、前端 bug）记控制台并用 fallback。 */
+/** 后端 ErrorBody 的稳定错误码（DomainError.code），没有时为 undefined。 */
+export function errorCode(body: unknown): string | undefined {
+  const code = (body as FastApiErrorBody | undefined)?.code;
+  return typeof code === "string" ? code : undefined;
+}
+
+/** 把任意抛出的值转成可展示文案：优先 code 中文映射，其次后端 detail；非 ApiError 记控制台。 */
 export function toErrorMessage(error: unknown, fallback = "请求失败"): string {
   if (error instanceof ApiError) {
-    return error.message;
+    return messageForCode(error.code) ?? error.message;
   }
   console.error(error);
   return fallback;
@@ -75,7 +84,7 @@ export async function unwrap<T>(
 ): Promise<T> {
   const { data, error, response } = await result;
   if (error !== undefined) {
-    throw new ApiError(response.status, errorMessage(error));
+    throw new ApiError(response.status, errorMessage(error), errorCode(error));
   }
   return data as T;
 }
