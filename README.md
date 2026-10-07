@@ -56,20 +56,14 @@ npm run dev                   # web :5173 / admin :5174
 - 后台管理：http://localhost:5174 （用上面创建的管理员登录）
 - 用户前台：http://localhost:5173 （注册普通用户）
 
-## 常用命令
+## 日常开发
 
-| 位置 | 命令 | 说明 |
-|---|---|---|
-| backend/ | `uv run ruff check .` / `uv run ruff format --check .` | Lint / 格式检查 |
-| backend/ | `uv run ty check` | 类型检查 |
-| backend/ | `uv run pytest` | 测试（自动派生 `*_test` 库） |
-| frontend/ | `npm run typecheck` | 两个应用 + 包的 TS 检查 |
-| frontend/ | `npm run lint` / `npm run format` | Biome |
-| frontend/ | `npm run gen:api` | 从运行中的后端生成接口类型 |
-| frontend/ | `npm run e2e` | Playwright（先启动后端） |
+完整命令、结构约定、分层规则都在各端 AGENTS 里维护（也是给 AI 的说明），README 只保留起步流程：
+
+- 后端：[`backend/AGENTS.md`](./backend/AGENTS.md)
+- 前端：[`frontend/AGENTS.md`](./frontend/AGENTS.md)
 
 ## 加一个新功能（示例流程）
 
 1. 后端：模型 → `alembic revision --autogenerate` → service → route → schema → 测试
 2. 前端：`npm run gen:api` 更新类型 → 新建 `apps/admin/src/features/<域>/`（queries + components）→ 在 `src/routes/` 加薄路由
-3. 共享组件：在 `frontend/packages/ui` 下 `npx shadcn add <组件名>`
