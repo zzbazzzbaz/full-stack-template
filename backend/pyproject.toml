@@ -52,3 +52,6 @@ include = ["app", "tests"]
 
 [tool.uv]
 package = false
+
+[tool.fastapi]
+entrypoint = "app.main:app"

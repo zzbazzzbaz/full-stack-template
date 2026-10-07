@@ -18,3 +18,7 @@ class InvalidCredentialsError(DomainError):
 
 class NotFoundError(DomainError):
     """资源不存在。"""
+
+
+class InvalidActionError(DomainError):
+    """当前状态下不允许的操作，如修改自己的角色。"""

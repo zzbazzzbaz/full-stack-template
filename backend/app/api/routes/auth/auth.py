@@ -5,8 +5,8 @@ from app.api.schemas.auth import (
     LoginRequest,
     RegisterRequest,
     TokenResponse,
-    UserResponse,
 )
+from app.api.schemas.users import UserResponse
 from app.core.config import get_settings
 from app.services.auth import auth_service
 from app.services.errors import AlreadyExistsError, InvalidCredentialsError

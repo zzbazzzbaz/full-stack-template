@@ -4,10 +4,11 @@
 
 - 安装：`uv sync`
 - 初始化数据库/迁移：`uv run alembic upgrade head`；改模型后 `uv run alembic revision --autogenerate -m "描述"` 生成迁移
+- 创建管理员：`uv run python -m scripts.create_admin <username> [password]`
 - Lint：`uv run ruff check .` / `uv run ruff format --check .`
 - 类型：`uv run ty check`
 - 测试：`uv run pytest`（读 `.env`，连 `DATABASE_URL` 派生的 `<db>_test` 库，自动建库 + 每次重建表；禁止在测试里硬编码 `os.environ`）
-- 启动：`uv run fastapi run app.main:app`
+- 启动：`uv run fastapi run`（entrypoint 见 pyproject.toml）
 
 ## 分层（单向，禁止反向 import）
 

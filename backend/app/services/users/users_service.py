@@ -3,7 +3,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.security import hash_password
 from app.infrastructure.db.models.user import User
-from app.services.errors import AlreadyExistsError
+from app.services.errors import AlreadyExistsError, InvalidActionError, NotFoundError
 from app.services.pagination import normalize
 
 
@@ -32,3 +32,20 @@ async def list_users(session: AsyncSession, *, offset: int, limit: int) -> tuple
         await session.exec(select(User).order_by(col(User.id)).offset(offset).limit(limit))
     ).all()
     return total, list(items)
+
+
+async def set_role(session: AsyncSession, *, user: User, role: str) -> User:
+    user.role = role
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    return user
+
+
+async def change_role(session: AsyncSession, *, user_id: int, role: str, actor: User) -> User:
+    if user_id == actor.id:
+        raise InvalidActionError("cannot change your own role")
+    user = await get_by_id(session, user_id)
+    if user is None:
+        raise NotFoundError(f"user {user_id} not found")
+    return await set_role(session, user=user, role=role)

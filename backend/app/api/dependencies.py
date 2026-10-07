@@ -45,6 +45,12 @@ async def get_current_user(
     return user
 
 
+async def get_current_admin(me: User = Depends(get_current_user)) -> User:
+    if me.role != "admin":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "admin required")
+    return me
+
+
 def pagination_params(
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=DEFAULT_LIMIT, ge=1),
@@ -53,5 +59,6 @@ def pagination_params(
 
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
-CurrentUser = Annotated[User, Depends(get_current_user)]
-PageParams = Annotated[tuple[int, int], Depends(pagination_params)]
+CurrentUserDep = Annotated[User, Depends(get_current_user)]
+CurrentAdminDep = Annotated[User, Depends(get_current_admin)]
+PageParamsDep = Annotated[tuple[int, int], Depends(pagination_params)]
