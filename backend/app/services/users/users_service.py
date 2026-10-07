@@ -17,7 +17,7 @@ async def get_by_username(session: AsyncSession, username: str) -> User | None:
 
 async def register_user(session: AsyncSession, *, username: str, password: str) -> User:
     if await get_by_username(session, username) is not None:
-        raise AlreadyExistsError(f"username {username!r} already taken")
+        raise AlreadyExistsError(f"username {username!r} already taken", code="username_taken")
     user = User(username=username, password_hash=hash_password(password))
     session.add(user)
     await session.commit()
@@ -44,7 +44,7 @@ async def set_role(session: AsyncSession, *, user: User, role: str) -> User:
 
 async def change_role(session: AsyncSession, *, user_id: int, role: str, actor: User) -> User:
     if user_id == actor.id:
-        raise InvalidActionError("cannot change your own role")
+        raise InvalidActionError("cannot change your own role", code="cannot_change_own_role")
     user = await get_by_id(session, user_id)
     if user is None:
         raise NotFoundError(f"user {user_id} not found")

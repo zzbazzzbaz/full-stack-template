@@ -38,7 +38,7 @@
 
 ```bash
 cd backend
-cp .env.example .env          # 填 DATABASE_URL / JWT_SECRET
+cp .env.example .env          # 填 DATABASE_URL / JWT_SECRET（openssl rand -hex 32 生成）
 uv sync
 uv run alembic upgrade head
 uv run python -m scripts.create_admin admin yourpassword   # 创建第一个管理员

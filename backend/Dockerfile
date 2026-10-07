@@ -2,16 +2,18 @@ FROM python:3.14-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    UV_SYSTEM_PYTHON=1
+    UV_NO_DEV=1
 
 WORKDIR /srv/app
 
-RUN pip install --no-cache-dir uv
+COPY --from=ghcr.io/astral-sh/uv:0.12.23 /uv /uvx /bin/
 
-COPY pyproject.toml ./
-COPY uv.lock* ./
-RUN uv sync --frozen --no-dev || uv sync --no-dev
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-dev
 
+COPY alembic.ini ./
+COPY migrations ./migrations
+COPY scripts ./scripts
 COPY app ./app
 
 EXPOSE 8000

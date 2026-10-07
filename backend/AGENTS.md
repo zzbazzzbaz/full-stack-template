@@ -17,6 +17,6 @@ core → infrastructure → services → api
 ```
 
 - `api`：解析参数、调 service、异常转 HTTP（DomainError → 状态码统一映射在 `app/api/error_handlers.py`，route 不写 try/except）、返回 schema。禁止业务判断、禁止写查询。
-- `services`：领域规则、事务、授权。禁止 HTTP 概念（HTTPException、Request、Depends）。
+- `services`：领域规则、事务、授权。禁止 HTTP 概念（HTTPException、Request、Depends）；业务异常抛 `app/services/errors.py` 的 DomainError（带稳定 `code`，前端据此映射文案）。
 - `infrastructure`：数据库、外部系统适配。禁止业务规则，禁止依赖 `services` / `api`。
 - `core`：配置、密钥、令牌。禁止依赖任何上层。

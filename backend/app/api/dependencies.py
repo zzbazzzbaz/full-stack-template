@@ -27,27 +27,27 @@ async def get_current_user(
 ) -> User:
     settings = get_settings()
     if credentials is None:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "missing token")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "缺少访问令牌")
     try:
         subject = decode_subject(
             token=credentials.credentials,
             secret=settings.jwt_secret,
         )
     except jwt.PyJWTError, ValueError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "invalid token") from None
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "登录状态无效") from None
     try:
         user_id = int(subject)
     except ValueError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "invalid token") from None
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "登录状态无效") from None
     user = await users_service.get_by_id(session, user_id)
     if user is None:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "invalid token")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "登录状态无效")
     return user
 
 
 async def get_current_admin(me: User = Depends(get_current_user)) -> User:
     if me.role != "admin":
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "admin required")
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "需要管理员权限")
     return me
 
 

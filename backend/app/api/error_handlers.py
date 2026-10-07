@@ -29,9 +29,10 @@ _STATUS_BY_ERROR: dict[type, int] = {
 }
 
 _INTERNAL_ERROR_DETAIL = "internal server error"
+_INTERNAL_ERROR_CODE = "internal_error"
 
 
-def _status_code(exc: Exception) -> int | None:
+def _status_code(exc: DomainError) -> int | None:
     for cls in type(exc).__mro__:
         if cls in _STATUS_BY_ERROR:
             return _STATUS_BY_ERROR[cls]
@@ -39,6 +40,8 @@ def _status_code(exc: Exception) -> int | None:
 
 
 async def _handle_domain_error(request: Request, exc: Exception) -> JSONResponse:
+    # 只注册在 DomainError 上；Starlette 按注册类型分发
+    assert isinstance(exc, DomainError)
     status_code = _status_code(exc)
     if status_code is None:
         # 未登记的业务异常：记日志，响应不泄露内部信息
@@ -49,10 +52,11 @@ async def _handle_domain_error(request: Request, exc: Exception) -> JSONResponse
             exc_info=exc,
         )
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        detail = _INTERNAL_ERROR_DETAIL
+        detail, code = _INTERNAL_ERROR_DETAIL, _INTERNAL_ERROR_CODE
     else:
-        detail = str(exc)
-    return JSONResponse(status_code=status_code, content=ErrorBody(detail=detail).model_dump())
+        detail, code = str(exc), exc.code
+    body = ErrorBody(detail=detail, code=code)
+    return JSONResponse(status_code=status_code, content=body.model_dump())
 
 
 def register_error_handlers(app: FastAPI) -> None:
